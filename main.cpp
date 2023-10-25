@@ -63,18 +63,21 @@ class Dog {
 	};
 
 	void get_up_toy(const std::shared_ptr<Toy>& _new_toy_ptr) {
-		if (this->dog_toy == _new_toy_ptr)
-			std::cout << this->name << " already have this toy" << std::endl;
-		else {
-			if (dog_toy != nullptr) this->drop_toy();
-			dog_toy = _new_toy_ptr;
-			std::cout << this->name << " pick up toy " << dog_toy->get_name() << "." << std::endl;
-		}
+		if (_new_toy_ptr.use_count() > 1) {
+			if (this->dog_toy == _new_toy_ptr)
+				std::cout << this->name << " already have this toy" << std::endl;
+			else {
+				if (dog_toy != nullptr) this->drop_toy();
+				dog_toy = _new_toy_ptr;
+				std::cout << this->name << " pick up toy " << dog_toy->get_name() << "." << std::endl;
+			}
+		} else
+			std::cout << "This toy is owned by another dog!" << std::endl;
 	}
 
 	void drop_toy() {
 		if (dog_toy != nullptr) {
-			std::cout << this->name << " dropped toy " << dog_toy->get_name() << "." << std::endl;
+			std::cout << this->name << " dropped toy " << this->get_toy_name() << "." << std::endl;
 			dog_toy = nullptr;
 		}
 	}
@@ -83,8 +86,11 @@ class Dog {
 		return this->name;
 	}
 
-	std::shared_ptr<Toy> get_toy() {
-			return this->dog_toy;
+	std::string get_toy_name() {
+		if (this->dog_toy != nullptr)
+			return this->dog_toy->get_name();
+		else
+			return "Has No Toy";
 	}
 };
 
@@ -110,9 +116,9 @@ int main() {
 	show_ptr_count(bone);
 	std::cout << "-----------------------" << std::endl;
 
-	std::cout << sharik->get_name() << " have toy -> " << sharik->get_toy()->get_name() << std::endl;
+	std::cout << sharik->get_name() << " have toy -> " << sharik->get_toy_name() << std::endl;
 	std::cout << "-----------------------" << std::endl;
-	std::cout << tuzik->get_name() << " have toy -> " << tuzik->get_toy()->get_name() << std::endl;
+	std::cout << tuzik->get_name() << " have toy -> " << tuzik->get_toy_name() << std::endl;
 	std::cout << "-----------------------" << std::endl;
 
 	sharik->get_up_toy(bone);
@@ -121,9 +127,9 @@ int main() {
 	show_ptr_count(bone);
 	std::cout << "-----------------------" << std::endl;
 
-	std::cout << sharik->get_name() << " have toy -> " << sharik->get_toy()->get_name() << std::endl;
+	std::cout << sharik->get_name() << " have toy -> " << sharik->get_toy_name() << std::endl;
 	std::cout << "-----------------------" << std::endl;
-	std::cout << tuzik->get_name() << " have toy -> " << tuzik->get_toy()->get_name() << std::endl;
+	std::cout << tuzik->get_name() << " have toy -> " << tuzik->get_toy_name() << std::endl;
 	std::cout << "-----------------------" << std::endl;
 	delete sharik;
 	std::cout << "-----------------------" << std::endl;
