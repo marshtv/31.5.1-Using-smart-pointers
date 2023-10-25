@@ -63,14 +63,14 @@ class Dog {
 	};
 
 	void get_up_toy(const std::shared_ptr<Toy>& _new_toy_ptr) {
-		if (_new_toy_ptr.use_count() > 1) {
+		if (_new_toy_ptr.use_count() > 0) {
 			if (this->dog_toy == _new_toy_ptr)
 				std::cout << this->name << " already have this toy" << std::endl;
-			else {
-				if (dog_toy != nullptr) this->drop_toy();
-				dog_toy = _new_toy_ptr;
-				std::cout << this->name << " pick up toy " << dog_toy->get_name() << "." << std::endl;
-			}
+			else if (this->dog_toy == nullptr) {
+				this->dog_toy = _new_toy_ptr;
+				std::cout << this->name << " pick up toy " << this->dog_toy->get_name() << "." << std::endl;
+			} else
+				std::cout << "Already have another toy." << std::endl;
 		} else
 			std::cout << "This toy is owned by another dog!" << std::endl;
 	}
@@ -121,6 +121,13 @@ int main() {
 	std::cout << tuzik->get_name() << " have toy -> " << tuzik->get_toy_name() << std::endl;
 	std::cout << "-----------------------" << std::endl;
 
+	sharik->drop_toy();
+	show_ptr_count(ball);
+	std::cout << "-----------------------" << std::endl;
+	tuzik->drop_toy();
+	show_ptr_count(bone);
+	std::cout << "-----------------------" << std::endl;
+
 	sharik->get_up_toy(bone);
 	tuzik->get_up_toy(ball);
 	show_ptr_count(ball);
@@ -136,4 +143,5 @@ int main() {
 	delete tuzik;
 	std::cout << "-----------------------" << std::endl;
 	show_ptr_count(ball);
+	show_ptr_count(bone);
 }
